@@ -1,0 +1,44 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+public class ZipMethod {
+    public static void main(String[] args)throws Exception{
+        ziptest() ;
+    }
+
+    public static void ziptest() throws Exception {
+        byte[] buffer = new byte[1024];
+        String zipName = "要新建ZIP檔的路徑及ZIP檔名稱";
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipName));
+
+        File[] files = {new File("要壓縮的檔案"),
+             new File("要壓縮的檔案"),
+             new File("要壓縮的檔案")};
+
+        for (int i = 0; i < files.length; i++) {
+            FileInputStream fis = new FileInputStream(files[i]);
+            out.putNextEntry(new ZipEntry(files[i].getName()));
+            int len;
+            //讀入需要下載的檔案的內容,打包到zip檔案
+
+            while ((len = fis.read(buffer)) > 0) {
+
+                out.write(buffer, 0, len);
+
+            }
+
+            out.closeEntry();
+
+            fis.close();
+
+        }
+
+        out.close();
+
+        System.out.println("生成zip成功");
+
+    }
+}
