@@ -1,0 +1,48 @@
+public class 身分證字號產生器 {
+
+    public static void main(String[] args) {
+        //檢查機制
+        boolean check = true;
+        while (check) {
+            //寄放身分證字號
+            char[] id = new char[10];
+            //第一個為英文數字並放入第一格
+            char oneCher = (char) ((new Random().nextInt(26)) + 65);
+            id[0] = oneCher;
+
+            //第二個數為性別只有1跟2並放入陣列第二格
+            char twoCher = (char) (new Random().nextInt(2) + 49);
+            id[1] = twoCher;
+
+            //隨機拿取剩下的八碼
+            for (int i = 2; i < id.length; i++) {
+                id[i] = (char) (new Random().nextInt(9) + 48);
+            }
+            //檢查公式
+            //(n1*1)+(n2*9)+(n3*8)+(n4*7)+(n5*6)+(n6*5)+(n7*4)+(n8*3)+(n9*2)+(n10*1)+(n11*1)
+            //total%10=0
+            int[] idToint = new int[9];
+            int one = (((int) oneCher) - 65) / 10;
+            int two = (((int) oneCher) - 65) % 10;
+            for (int i = 0; i < idToint.length; i++) {
+                idToint[i] = (int) id[i + 1];
+            }
+            int total = (one * 1) + (two * 9)
+                    + (idToint[0] * 8) + (idToint[1] * 7) + (idToint[2] * 6)
+                    + (idToint[3] * 5) + (idToint[4] * 4) + (idToint[5] * 3)
+                    + (idToint[6] * 2) + (idToint[7] * 1) + (idToint[8] * 1);
+            if (total % 10 == 0) {
+                System.out.println("產生的身分證字號為:");
+                for (char c : id) {
+                    System.out.print(c);
+                    check = false;
+                }
+            } else {
+                continue;
+            }
+
+        }
+
+    }
+
+}
