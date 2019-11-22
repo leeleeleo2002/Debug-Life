@@ -1,0 +1,39 @@
+java平台:eclipse(2019-09 R (4.13.0)) ,NetBeans(8.2)
+
+mySql:8.0.18
+
+套件包:mysql-connector-java-8.0.18
+
+
+1.在撰寫的平台加入套件包
+
+2.準備要夠連資料庫的連結:
+String url = "jdbc:mysql://localhost:3306/test?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
+                構聯廠商://構聯IP:PO號  / schema名稱 + ?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC(sql新版本問題須加這一段)
+                
+3.獲取構聯的物件:進入MYSQL資料庫的動作
+Connection cn = DriverManager.getConnection(url,使用者帳號 ,使用者密碼);
+--------------------------------------------------------我是分隔線----------------------------------------------------------------------------------
+情況一:查詢表單
+1.獲取Statement物件:動作:查詢表單:執行SQL查詢，並返回ResultSet 對象
+
+String SQL = "SELECT * FROM TEST.SC";//準備要查詢的SQL表單字串
+Statement st = connection.createStatement(); //使用Connection來創建一個Statment對象
+ResultSet rs = st.executeQuery(sql);//執行查詢語句並且保存結果,resultSet集合
+
+2.使用while獲取資料 並列印
+(假設表單內欄位為
+String SNO
+String CNI
+int SCORE)
+
+while (rs.next()) {
+			String sno = rs.getString("SNO");
+			String cno = rs.getString("CNO");
+			int score = rs.getInt("SCORE");
+                        System.out.print(就可利用變數資料印出來)
+			
+		}
+3.關閉資料庫
+connection.close();
+
