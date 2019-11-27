@@ -1,2 +1,19 @@
 情況一:在建立MAVEN專案的時候強制關閉，導致重新開始時MAVEN專案無法運行:
 
+最近匯入了Maven專案，不知道為什麼pom.xml一直跳紅字
+
+且出現的錯誤都是看不懂pom.xml中的標籤
+
+上網查了很多方法，一併嘗試後錯誤就消失了
+
+確切的成功原因不確定，不過我嘗試的步驟在此分享一下
+
+
+到{user}/.m2/repository的路徑，搜尋*.lastupdated，將搜到的檔案刪除 (.lastupdated似乎是沒有下載完成的檔案)
+Eclipse → Help → Eclipse Marketplace → installed，將Maven更新
+在Eclipse的Package Explorer下刪除專案，並在空白處按右鍵，選擇Import 選Maven下的Existing Maven Projects，將專案重新匯入
+在專案上按右鍵 → Maven → Update Project，嘗試更新
+
+
+
+情況二:建立MAVEN專案時
