@@ -95,7 +95,8 @@ Eclipse → Help → Eclipse Marketplace → installed，將Maven更新
   
 </web-app>
 
-6.在跟web同資料匣新增
+6.設定:dispatcher-servlet.xml
+在跟web同資料匣新增
 建立一個 dispatcher-servlet.xml 跟 web.xml 相同位置
 
 這裡的 <context:component-scan base-package="com.programcreek.helloworld.controller" /> 是看你設定的controller package 
@@ -125,3 +126,9 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 </beans>
   
   
+ 7.新建控制器:Controller在src/main/java
+ 建完記得回去改dispatcher-servlet.xm的
+  <context:component-scan base-package="com.programcreek.helloworld.controller" />
+  
+  
+  開發環境設定完可以開始撰寫啦
