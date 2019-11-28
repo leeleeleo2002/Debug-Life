@@ -18,8 +18,10 @@ Eclipse → Help → Eclipse Marketplace → installed，將Maven更新
 
 情況二:建立MAVEN專案時
 
-1.可能會遇到src/main資料夾錯誤
-處理方法:在路徑中移除main/java資料夾再重新新增回來
+1.可能會遇到src/main資料夾錯誤:在專案案右鍵->內容->java建置路徑->移除兩個有錯誤的資料夾
+再將兩個資料夾新增回來
+並在路徑中加入
+
 
 2.index.jsp httpServlet was not found的問題
 
@@ -59,5 +61,67 @@ Eclipse → Help → Eclipse Marketplace → installed，將Maven更新
 	</dependency>
   
   4.設定JAVA版本:在專案案右鍵->內容->Project Facet中設定JAVA所使用的版本:預設為1.5
+  
+  5.設定web檔
+  
+  <?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+ 
+  <display-name>Archetype Created Web Application</display-name>
+  
+  <servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+ 
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+ 
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+	</context-param>
+ 
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+  
+</web-app>
+
+6.在跟web同資料匣新增
+建立一個 dispatcher-servlet.xml 跟 web.xml 相同位置
+
+這裡的 <context:component-scan base-package="com.programcreek.helloworld.controller" /> 是看你設定的controller package 
+
+然後需要再ＷEB-INF下新增一個 views 資料夾
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+	<context:component-scan base-package="com.programcreek.helloworld.controller" />
+ 
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+</beans>
   
   
