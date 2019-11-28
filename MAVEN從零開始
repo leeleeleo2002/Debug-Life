@@ -131,4 +131,11 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
   <context:component-scan base-package="com.programcreek.helloworld.controller" />
   
   
+  controller內的一般插件
+  import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+  
+  
   開發環境設定完可以開始撰寫啦
