@@ -1,6 +1,0 @@
-Spring 標籤庫
-
-@Controller:標示類別為控制器
-
-@RequestMapping(value="/控制器類別名稱",method = RequestMethod.POST)
-
