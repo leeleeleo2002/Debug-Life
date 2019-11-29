@@ -1,0 +1,53 @@
+1.分層觀念:Controller層(控制) -> Service層(業務邏輯:表單組合) -> DAO層(構聯JDBC方法)
+
+  Spring MVC 
+  第一步驟: 需再dispatcher-servlet.xml檔裡面的<context:component-scan base-package="設置掃描你所有package的路徑" />
+           這樣才能在Spring註釋的時候掃到所有的檔案
+           
+  第二步驟:[1]需要在Controller層類別上方標示@Controller,並在Controller內宣告private Service service 的欄位並在上方註釋@Autowired
+          ,且需給予GETandSetter讓Spring可以自動產生及消滅。
+          [2]需再Service層類別上方標示@Service,並在Service內宣告private DAO dao 的欄位並在上方註釋@Autowired,
+          ,且需給予GETandSetter讓Spring可以自動產生及消滅。
+          [3]需再DAO實作層標示@Repository讓Service層可以使用。
+          
+          
+
+2.登入頁面帳號密碼錯誤，重新導向頁面且需顯示錯誤字串:
+  以下方程式碼解釋:
+ 此註釋是對應到前端FORM ACTION的時候所尋找的Controller 方法。
+                          [跟form 的action相同]      [ 跟form的method相同]
+ @RequestMapping(value = "/ControllerSignIn", method = RequestMethod.POST)  <-此為方法名稱上方的註釋
+ 
+         [返回的字串方法會對應到dispatcher-servlet.xml檔的開頭跟結尾,即為跳轉至哪個頁面]                    
+	public String SignIn    <-此為宣告的方法名稱
+  
+          [此註釋為請求獲取欄位，跟請求前端的名稱需相同]
+      (@RequestParam(value = "email") String email
+      ,@RequestParam(value = "password") String password                    <-此三行為方法參數
+			,@ModelAttribute(value = "student") Student student, Model model) 
+        [此欄位為頁面跳轉之後使用甚麼EL名稱獲取此欄位]
+      
+      {
+		ResultSet r = null;
+		if (email.isEmpty() || password.isEmpty()) {
+      [可利用model方法新增標籤到跳轉頁面的位置]
+			model.addAttribute("aaa", "aaa");
+      
+      ["redirect:"  <-此方法為重新定義跳轉路徑從根目錄開始找，不受dispatcher-servlet.xml檔設定的影響]
+			return "redirect:/index.jsp";
+		} else {
+			try {
+	
+				}
+				String md5 = tool.convertMD5(student.getSpwd());
+				model.addAttribute("MD5", md5);
+				return "viewSignIn";
+			} catch (Exception e) {
+				System.out.println("帳號密碼錯誤");
+				System.out.println(e.getMessage());
+			}
+
+		}
+
+		return "redirect:index.jsp";
+	}
