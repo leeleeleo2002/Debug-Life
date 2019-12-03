@@ -1,1 +1,13 @@
 要引入檔案前請先去備份C:\Users\user\.m2\repository下的所有資料夾，以便之後可以刪除全部導回目前的工作環境。
+
+基本款請看MAVEN從零開始
+
+
+
+1.JAVAMAIL:
+<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+<dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4.7</version>
+</dependency>
