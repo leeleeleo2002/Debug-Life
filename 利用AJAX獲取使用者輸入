@@ -1,0 +1,28 @@
+//網頁載入完成觸發
+$(document).ready(function(){
+  
+    //利用選取器選擇DIV的ID
+  $("#mailButton").click(function(){
+  
+    //使用AJAX
+      $.ajax({
+                        //設定為POST
+                        type:"POST",  
+                        
+                        //傳到的Controller
+                        url: "AJAX",       
+                        
+                        //利用ID選取MAIL INPUT 使用者輸入的欄位
+                        data: $("#mail").serialize(), 
+                         
+                        //型態為JASON
+                        dataType: "json",   
+                        
+                        //成功收到回應執行的部分
+                        success : function(response){},
+                        
+                        //沒收到回應執行的部分
+                        error:function(xhr, ajaxOptions, thrownError){
+ 
+                            alert(xhr.status+"\n"+thrownError);
+                        }
