@@ -1,0 +1,53 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js">
+</script>
+ <script>
+ 
+             //在網頁加載後，對id=doAjaxBtn的Button設定click的function
+ 
+            $(document).ready(function(){
+            	$('#mailButton').click(function(){
+            		event.preventDefault();
+            		var str = $('#mail').val();
+            		console.log(str);
+            		$.post('/mavenRight/test',{"mail":str}).success(function(data){
+            			if(data == 'right'){
+            				alert("EMAIL重複");
+            			}else if(data == 'error'){
+            				alert("此帳號可以使用");
+            			}else{
+            				alert("黑人問號");
+            			}
+            		});
+            	});
+            	
+            });
+
+        </script>
+        
+       <div class="pure-control-group" id="DivEmail">
+            <label for="email">Email Address</label>
+            <input  type="email" placeholder="Email Address" name="mail" id="mail" >
+            <input type="button" id="mailButton" value="檢查信箱">
+        </div>
+        
+        
+        --------------------------------------------------------我是前後端分隔線----------------------------------------------------------------------
+        
+  @RequestMapping(value = "/test")
+	@ResponseBody
+	public String testSent(@RequestParam ("mail")String str) {
+		try {
+			if(service.getDao().selectEmailAJ(str)) {
+				str = "right";
+				return str;
+				
+			}else {
+				str = "error";
+				return str;
+			}
+			
+		} catch (Exception e) {
+		System.out.println(e.getMessage());
+		}
+		return str;
+	}
