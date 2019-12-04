@@ -1,0 +1,67 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js">
+</script>
+ 
+ $(document).ready(function(){
+        	 $('#ajaxButton').click(function(){
+        		 var str = $("#mail").val();
+        		 $.ajax({
+        			 
+        			 type:'POST',
+        			 url:'aaa',
+        			 data:$("#mail").serialize(),//JSON.stringify() , //$("#mail").serialize(),{"mail":str}
+        			 dataType:'json',
+        			 //contentType: "application/json; charset=utf-8",
+        			 success : function(data){
+  							console.log(typeof(data));
+                         // var obj = JSON.parse('{"json2":"qwer","json":"成功轉型"}');
+                          //var obj = JSON.parse(data);
+                          
+							/*var obj = JSON.stringify(data);
+							console.log(obj);
+							var obj2 = JSON.parse(obj);
+							console.log(obj2);*/
+                             alert(data.check);
+  
+                         },
+                         error:function(xhr, ajaxOptions, thrownError){
+                        	console.log(typeof(data));
+                             alert(xhr.status+"\n"+thrownError);
+                         }
+        			 
+        			 
+        			 
+        		 });
+        		 
+        		 
+        	 });
+        	 
+         });
+         
+         
+         
+         <input type="button" id="ajaxButton" value="檢查信箱A">
+         <input  type="email"  name="mail" id="mail" >
+         -----------------------------------------------------------------------------------------------------------------------
+  @RequestMapping(value = "aaa",method = RequestMethod.POST,headers="Accept=*/*" )
+	@ResponseBody
+	public String ajaxTest(@RequestParam String mail) {
+		System.out.println("輸入值進到Controller:" +mail);
+		System.out.println("比對資料庫............");
+		Boolean check = null;
+		
+		JSONObject json = new JSONObject();
+		try {
+			check =service.getDao().selectEmailAJ(mail);
+			if(check) {
+				json.append("check", "The account is existing");
+				return json.toString();
+			}else {
+				json.append("check", "The account can use");
+				return json.toString();
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			json.append("check", "Please Enter Number");
+			return json.toString();
+			
+		}
