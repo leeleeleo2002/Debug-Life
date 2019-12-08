@@ -35,6 +35,9 @@ $(".class1名稱 , class2名稱")
 7.選擇ul下所有的標籤								</ul>
 $(".class名稱 ul *")							<div>
 
+8.利用length確定自己選到的元素
+
+
 --------------------------------------------------------Jquery自創選擇器對應上方的前端----------------------------------------------------
 1.單選模式:選擇第二個li
 $("li").eq(2);    <-只有eq可以單獨拉出來
@@ -54,14 +57,76 @@ $("li:not(:eq(3))"); 選擇li排除編號為3的的li
 
 
 -------------------------------------------------------Jquery常用方法--------------------------------------------------------------------
-1.點擊
+1.點擊:click()
 $("button").click(function(){
 //點擊後觸發的事件程序
 範例:alert("你好");
 });
 
-2.鼠標滑過
+2.鼠標滑過:mouseover()
 $("#box1").mouseover({
 //鼠標滑過的事件程序
 範例:alert("你好");
 });
+
+-------------------------------------------------------區塊顯示跟隱藏---------------------------------------------------------------------
+前端:
+<div class="box">
+	<ul>
+		<li class ="spec1">點擊我可隱藏中間區塊文字</li>
+		<li class="test" id="test">qwe</li>
+		<li class="test" id="test">qwe</li>
+		<li class="test" id="test">qwe</li>
+		<li class="spec2" id="test">滑過我可顯示中間區塊文字</li>
+	</ul>
+</div>
+
+用class console.log(".test")可以選到全為test類別的物件
+用id的差別 console.log("#test")只會選到第一個
+
+
+1.隱藏:hide()
+範例:利用點擊第一個li可以隱藏中間所有區塊,及利用第五個顯示
+$(".box ul li.spec1").click(function(){
+	$(".test").hide();
+});
+2.顯示:show()
+$(".box ul li.spec2").click(function(){
+	$(".test").show();
+});
+
+----------------------------------------------新增刪除修改類別名-----------------------------------------------------------------------
+前端
+<div class="box"></div>
+
+1.新增class名稱:addClass()
+$(".box").addClass("mybox"); <-此行會往div的box後方加上mybox名稱 此時class名稱會變成 class="box mybox"用選擇器印出來會$(".box.mybox")
+
+2.刪除class名稱:removeClass()
+
+------------------------------------------------修改屬性值 attr()-----------------------------------------------------------------------
+attr()方法用來更改所選html標籤:$().attr(屬性,值)
+
+範例程式:前端
+
+<img id = "img1" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKkwMQDZcgaMcgqU44KibUKNlpm7zoMm1gwr-pWhGJL4Vq7mGwSA&s">
+
+Jquery部分
+	$(document).ready(function(){
+
+	$("#img1").mouseover(function(){
+		$("#img1").attr("src" , "https://img.biggo.com.tw/s3VLsgUt0Hn75NrWWZC-iPH7cHy-6_Fhyf7PuwbUFTxc/https://cfshopeetw-a.akamaihd.net/file/f9b4b8b150c9abfdf77f04874d1c93f7")
+	}).mouseout(function(){
+		$("#img1").attr("src" , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKkwMQDZcgaMcgqU44KibUKNlpm7zoMm1gwr-pWhGJL4Vq7mGwSA&s")
+	});
+	
+		});
+		
+		
+備註:$("#img1")也可以使用$(this)表示選擇器選到的元素本身。
+
+好用小方法
+var itemid = $("#img1").attr("id"); 利用attr讀取參數
+alert(itemid);
+
+-----------------------------------------
