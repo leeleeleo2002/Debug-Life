@@ -1,5 +1,5 @@
 1.使用註解
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>  //使用goole jquery線上1.8版
 
 2.運行程式範圍
 	<script type="text/javascript"></script>
@@ -54,4 +54,14 @@ $("li:not(:eq(3))"); 選擇li排除編號為3的的li
 
 
 -------------------------------------------------------Jquery常用方法--------------------------------------------------------------------
+1.點擊
+$("button").click(function(){
+//點擊後觸發的事件程序
+範例:alert("你好");
+});
 
+2.鼠標滑過
+$("#box1").mouseover({
+//鼠標滑過的事件程序
+範例:alert("你好");
+});
