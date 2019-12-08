@@ -1,0 +1,36 @@
+1.使用註解
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+2.運行程式範圍
+	<script type="text/javascript"></script>
+  
+3.頁面加載完成
+$(document).ready(function(){   });
+
+4.輸出到面板上
+console.log();
+
+5.跳出告警
+alert();
+
+-------------------------------------------------------以下為選擇器---------------------------------------------------------
+1.選擇id
+$("#id名稱")
+
+2.選擇class
+$(".class名稱")
+
+3.選擇div
+$("div")
+
+4.選擇div下ul的li標籤
+$("div ul li")
+
+5.選擇class為box下ul下li的class為spec的標籤
+$(".box ul lu.spec")
+
+6.選擇雙類別元素
+$(".class1名稱 , class2名稱")
+
+7.選擇ul下所有的標籤
+$(".class名稱 ul *")
