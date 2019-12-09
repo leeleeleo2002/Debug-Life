@@ -148,3 +148,39 @@ html()會識別字串中的標籤
 	$("#box1").text(" <img src='https://img.biggo.com.tw/s3VLsgUt0Hn75NrWWZC-iPH7cHy-6_Fhyf7PuwbUFTxc/https://cfshopeetw-a.akamaihd.net/file/f9b4b8b150c9abfdf77f04874d1c93f7'> ");
 	$("#box2").html(" <img src='https://img.biggo.com.tw/s3VLsgUt0Hn75NrWWZC-iPH7cHy-6_Fhyf7PuwbUFTxc/https://cfshopeetw-a.akamaihd.net/file/f9b4b8b150c9abfdf77f04874d1c93f7'> ");
 	
+
+------------------------------------------------------index()方法----------------------------------------------------------------------
+index()方法可以獲取序列值
+
+前端:
+<div>
+	<ul>
+		<li class="test"></li>
+		<li class="test"></li>
+		<li class="test"></li>
+		<li class="test"></li>
+		<li class="test"></li>
+		<li class="test"></li>
+	</ul>
+</div>
+
+Jquery:
+
+	$(document).ready(function(){
+			$(".test").click(function(){				
+				alert($(this).index());
+			});
+			
+		});
+
+------------------------------------------------------------each()方法-----------------------------------------------------------
+走訪每一個被選取的元素
+
+$(".test").each(function(){
+	$(this).html($(this).index());
+});
+
+
+
+
+
