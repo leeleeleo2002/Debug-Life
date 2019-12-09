@@ -183,4 +183,53 @@ $(".test").each(function(){
 
 
 
+------------------------------------------------------------動畫-------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+<script type="text/javascript">
+$(document).ready(function(){
+		$("#box").animate({
+			"left":800,
+			"top":300,
+			"width":100,
+			"height":100,
+			"border-radius":"50%"
+			
+		},10000);
+	});
+</script> 
+<style type="text/css">
+	.box{
+	width:200px;
+	height:200px;
+	background-color:blue;
+	position:relative;
+	}
+	
+	</style>
+	
+<div class="box" id="box"><div>
+
+-----------------------------------------------------------animate()方法------------------------------------------------------------
+
+
+animate()方法傳入兩個參數，第一參數為JSON，用來改變形狀，稱為動畫終點樣式。第二個參數為動畫總長，以毫秒為單位。
+公式$(選擇器).animate(JSON資料:動畫終點樣式，毫秒為單位的總動畫時間長)
+
+$(#box1).animate({"left:800"},10000)
+
+能夠參與animate的css基本屬性:
+width:變化長度
+height:變化寬度
+left:由左往右
+top:下降高度
+right:由又往左
+opacity:透明度變化
+(可連結到這參考網站
+w3c school:https://www.w3school.com.cn/jquery/effect_animate.asp)
+
+
+
+stop(boolean,boolean)方法可以用在暫停動畫
+第一個布林值為是否清空此物件的後續排列動畫
+第二個布林值為是否立即完成當前正在做的動畫
 
