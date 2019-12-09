@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet"
+	href="https://unpkg.com/purecss@1.0.1/build/pure-min.css">
+	
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+	
+	<script type="text/javascript">
+	
+
+	
+	</script>
+	<style type="text/css">
+	*{
+		margin:0;
+		padding:0;
+	}
+	
+	.box{
+		width:270px;
+		height:481px;
+		margin:50px auto;
+		position:relative;
+	}
+	
+	.box.box_image ul{
+		list-style:none;
+	}
+	
+	.box.box_image ul li{
+		display:none;
+	}
+	
+	.box.box_image ul lu.cur{
+		display:block ! important;
+	}
+	
+	.box.box_image ul li.img{
+		width:270px;
+		height:481px;
+	}
+	.box.box_nav{
+		position:absolute;
+		bottom:0;
+		right:0;
+		width:123px;
+		height:24px;
+	}
+	.box.box_nav ol{
+		list-style:none;
+	}
+	.box.box_nav ol li{
+		float:left;
+		width:16px;
+		height:16px;
+		margin-right:6px;
+		border-radius:50%;
+		background-color:#eee;
+		opacity:0.6;
+		
+	}
+	.box.box_nav ol li.cur{
+		background:darkred;
+	}
+	.box.box_btns.btn{
+		position:absolute;
+		width:40px;
+		height:40px;
+		border-radius:20%;
+		background-color:#ffd70085;
+	
+	}
+	
+	.box.box_btns.btn.left{
+		top:50%;
+		left:0;
+		margin-top:-20px;
+		margin-left:-20px;
+		
+	}
+	.box.box_btns.btn.right{
+		top:50%;
+		right:0;
+		margin-top:-20px;
+		margin-right:-20px;
+	}
+
+	</style>
+	
+<title>JqueryTest</title>
+</head>
+<body>
+
+<div class="box" id="mybox">
+	<div class="box_image">
+		<ul>
+			<li style="display:none;" class="cur">
+				<a href="javascript:;"><img src="https://fakeimg.pl/300/" alt=""></a>
+			</li>
+			
+			<li style="display:none;" class="cur">
+				<a href="javascript:;"><img src="https://fakeimg.pl/350x200/?text=Hello" alt=""></a>
+			</li>
+			
+			<li style="display:none;" class="cur">
+				<a href="javascript:;"><img src="https://fakeimg.pl/200x100/?retina=1&text=こんにちは&font=noto" alt=""></a>
+			</li>
+			
+			<li style="display:none;" class="cur">
+				<a href="javascript:;"><img src="https://fakeimg.pl/350x200/?text=World&font=lobster" alt=""></a>
+			</li>
+		</ul>
+	
+	</div>
+		<div class="box_nav">
+		<ol>
+			<li class="cur"></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ol>
+	</div>
+
+	<div class="box_btns">
+		<a href="javascript:;" class="btn left"></a>
+		<a href="javascript:;" class="btn right"></a>
+	</div>
+</div>
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+        <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
