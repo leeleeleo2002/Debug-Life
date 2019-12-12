@@ -154,13 +154,13 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
   
   <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
-    <property name="packagesToScan" value="com.tw.Bean"/>
+    <property name="packagesToScan" value="com.tw.Bean"/>   要掃描的bean層
     <property name="hibernateProperties">
       <props>
         <prop key="hibernate.dialect">
           org.hibernate.dialect.MySQLDialect
         </prop>
-        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.show_sql">true</prop>     是否要顯示SQL語法在CONSOLE端
       </props>
     </property>
   </bean>
@@ -353,11 +353,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 
-@Entity
-@Table(name="test.STUDENT",
-uniqueConstraints = {@UniqueConstraint(columnNames = {"SNO"})})
+@Entity   <-----Bean層宣告的註釋
+@Table(name="test.STUDENT",			<---------Table名稱		
+uniqueConstraints = {@UniqueConstraint(columnNames = {"SNO"})})		@UniqueConstraint唯一值的欄位
 public class Student{
-	@Id
+	@Id       <-------------------主鍵
 	@Column(name = "SNO")
 	private String sno;
 		
@@ -477,6 +477,10 @@ public class StudentDaoImpl implements StudentDao  {
 		return	sessionFactory.getCurrentSession().get(Student.class, SNO);	
 
 	}
+	
+	
+筆記:getCurrentSession()獲取目前正在使用的執行序
+     OpenSession()是直接開一個新的執行序來用
 -----------------------------------------------------------------------------------------------------------------------------------------	
 
 
@@ -502,7 +506,7 @@ public class StudentService{
 	private StudentDaoImpl dao;
 
 	@Transactional
-	public Student getStudent(String SNO) {
+	public Student getStudent(String SNO) {				存取映射資料的方法前必須加上@Transactional
 			return dao.getStudent(SNO);
 		}
 
