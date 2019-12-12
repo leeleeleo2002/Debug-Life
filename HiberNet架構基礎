@@ -1,0 +1,575 @@
+Spring MVC卡Hibernet
+
+
+
+第一步設定web.xml
+檔名:web.xml 在WEB_INF下
+------------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://java.sun.com/xml/ns/javaee" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+id="WebApp_ID" version="3.0">
+
+
+
+    <filter>  
+        <filter-name>characterEncodingFilter</filter-name>  
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
+        <init-param>  
+            <param-name>encoding</param-name>  
+            <param-value>UTF-8</param-value>  
+        </init-param>  
+        <init-param>  
+        
+            <param-name>forceEncoding</param-name>  
+            <param-value>true</param-value>
+              
+        </init-param>
+          
+     
+    </filter>  
+    <filter-mapping>  
+        <filter-name>characterEncodingFilter</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping> 
+
+ 
+ <display-name>Welcome</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value> <!-- Spring ApplicationContext location -->
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+
+	
+<servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:dispatcher-servlet.xml</param-value>  <!-- Spring WebApplicationContext location -->
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+第二步設定dispatcher-servlet.xml
+檔名dispatcher-servlet.xml 路徑在src/main/resources下
+-------------------------------------------------------------------------------------------------------------------------------------------
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+ 
+	<context:component-scan base-package="com.tw" />
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	
+	
+
+
+</beans>
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+第三部要開一個新的xml檔
+檔名:applicationContext.xml 路徑:src/main/resources下 這邊是重點
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util 
+                           http://www.springframework.org/schema/util/spring-util.xsd
+                           http://www.springframework.org/schema/mvc 
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+  <mvc:annotation-driven />
+  <context:annotation-config/>
+  <context:component-scan 
+              base-package="com.tw.Controller, 
+                            com.tw.Service,
+                            com.tw.Dao, 
+                            com.tw.Bean" />    這邊是輸入你用的bean,dao,service,controller層
+    
+  <mvc:default-servlet-handler />
+  
+  <!-- MySQL dataSource config -->    這邊要輸入你的資料庫資訊:我使用的是MySql
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />   這邊的value值是mysql 8.0之後所要動態產生的名字
+    <property name="url" value="jdbc:mysql://localhost:3306/test?useSSL=false&amp;serverTimezone=UTC&amp;characterEncoding=utf-8" />
+                                    宣告       本機  port號  schema名               8.0之後構聯資料庫需要宣告的設定
+    
+    <property name="username" value="root" />  帳號名稱
+    <property name="password" value="a7228086123" />    密碼
+  </bean>
+  
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="packagesToScan" value="com.tw.Bean"/>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">
+          org.hibernate.dialect.MySQLDialect
+        </prop>
+        <prop key="hibernate.show_sql">true</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <tx:annotation-driven/>
+  <bean id="transactionManager"
+    class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+胖檔
+-------------------------------------------------------------------------------------------------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.tw</groupId>
+  <artifactId>MyWeb2</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>MyWeb2 Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+   <properties>
+		<spring.version>4.0.1.RELEASE</spring.version>
+</properties>
+  
+  <dependencies>
+  <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.4</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.11</version>
+    </dependency>
+  
+  
+ 
+  
+  <!-- json檔專用 -->
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20180813</version>
+</dependency>
+  <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>4.3.14.RELEASE</version>
+    </dependency>
+    <!-- spring transaction manager -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>4.3.14.RELEASE</version>
+    </dependency>
+    <!-- spring jdbc -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>4.3.14.RELEASE</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>4.3.14.RELEASE</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.11</version>
+    </dependency>
+    <!-- Hibernate -->
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.2.12.Final</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.2.12.Final</version>
+    </dependency>
+    
+    <dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4.7</version>
+	</dependency>
+	
+	<!-- jstl -->
+	<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+	<dependency>
+   	 	<groupId>javax.servlet</groupId>
+    	<artifactId>jstl</artifactId>
+    	<version>1.2</version>
+	</dependency>
+	
+	 <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+	<dependency>
+    	<groupId>commons-fileupload</groupId>
+    	<artifactId>commons-fileupload</artifactId>
+    	<version>1.4</version>
+	</dependency>
+  
+  
+    <!-- json檔專用 -->
+	<dependency>
+    	<groupId>org.json</groupId>
+    	<artifactId>json</artifactId>
+    	<version>20180813</version>
+	</dependency>
+
+    
+  </dependencies>
+    <build>
+    <finalName>MyWeb2</finalName>
+  </build>
+</project>
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+都好了之後從資料庫開始建
+
+Schema: test
+Table: student
+Columns:
+SNO varchar(10) PK 
+SNAME varchar(20) 
+SBDAY date 
+SSEX int(1) 
+SMAIL varchar(50) 
+SPWD varchar(32)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+Bean層
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Bean;
+
+
+
+import java.sql.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+
+@Entity
+@Table(name="test.STUDENT",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"SNO"})})
+public class Student{
+	@Id
+	@Column(name = "SNO")
+	private String sno;
+		
+	
+	@Column(name = "SNAME")
+	private String sname;
+	
+	
+	@Column(name = "SBDAY")
+	private Date sbday;
+	
+	
+	@Column(name = "SSEX")
+	private int ssex;
+	
+	
+	@Column(name = "SMAIL")
+	private String smail;
+	
+	
+	@Column(name = "SPWD")
+	private String spwd;
+	
+	public Student() {
+		
+	}
+	
+	
+	public Student(String sno, String sname, Date sbday, int ssex, String smail, String spwd) {
+		super();
+		this.sno = sno;
+		this.sname = sname;
+		this.sbday = sbday;
+		this.ssex = ssex;
+		this.smail = smail;
+		this.spwd = spwd;
+	}
+
+	
+	public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public Date getSbday() {
+        return sbday;
+    }
+
+    public void setSbday(Date sbday) {
+        this.sbday = sbday;
+    }
+
+    public int getSsex() {
+        return ssex;
+    }
+
+    public void setSsex(int ssex) {
+        this.ssex = ssex;
+    }
+
+    public String getSmail() {
+        return smail;
+    }
+
+    public void setSmail(String smail) {
+        this.smail = smail;
+    }
+
+    public String getSpwd() {
+        return spwd;
+    }
+
+    public void setSpwd(String spwd) {
+        this.spwd = spwd;
+    }
+
+}
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+DAO層
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.tw.Bean.Student;
+import com.tw.Dao.StudentDaoImpl;
+
+
+@Repository()
+public class StudentDaoImpl implements StudentDao  {
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	public Student getStudent(String SNO) {
+		return	sessionFactory.getCurrentSession().get(Student.class, SNO);	
+
+	}
+-----------------------------------------------------------------------------------------------------------------------------------------	
+
+
+
+
+
+Service層
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Service;
+
+import java.sql.Date;
+
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.tw.Dao.StudentDaoImpl;
+import com.tw.Bean.Student;
+
+@Service()
+public class StudentService{
+	
+	@Autowired
+	private StudentDaoImpl dao;
+
+	@Transactional
+	public Student getStudent(String SNO) {
+			return dao.getStudent(SNO);
+		}
+
+	public void setDao(StudentDaoImpl dao) {
+		this.dao = dao;
+	}
+	public StudentDaoImpl getDao() {
+		return dao;
+	}
+  
+  ---------------------------------------------------------------------------------------------------------------------------------------
+  
+  
+  
+  
+  
+  
+  
+Controller層
+---------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Controller;
+
+
+import java.sql.Date;
+import java.sql.ResultSet;;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.tw.Service.StudentService;
+import com.tw.Service.tool;
+import com.tw.Bean.Student;
+
+@Controller
+public class WebController{
+	
+	@Autowired
+	private StudentService service;
+  
+  public void setService(StudentService service) {
+		this.service = service;
+	}
+
+	public StudentService getService() {
+		return service;
+	}
+	
+	@RequestMapping(value = "/hi" , method = RequestMethod.POST)
+	public String hiTest() {
+		String str = "A01";
+		Student student = service.getStudent(str);
+		System.out.println(student.getSno());
+		System.out.println(student.getSname());
+		return "Hipage";
+	}
+	
+
+	
+------------------------------------------------------------------------------------------------------------------------------------------
+前端測試FORM
+	<form action="hi" method="post">
+		<input type="submit" >
+	</form>
+  
+  
+  
