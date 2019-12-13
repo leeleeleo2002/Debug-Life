@@ -1,0 +1,353 @@
+前端
+------------------------------------------------------------------------------------------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Spring 4 MVC - HelloWorld Index Page</title>
+</head>
+
+
+<body>
+	<h1 align="center">登入系統</h1>
+
+	<form action="insert" method="post">
+		SNO:<input type="text" name="sno"><br><br>
+		SNAME:<input type="text" name="sname"><br><br>
+		SBDAY:<input type="text" name="sbday"><br><br>
+		SSEX:<input type="text" name="ssex"><br><br>
+		SMAIL:<input type="text" name="smail"><br><br>
+		SPWD:<input type="text" name="spwd"><br><br>
+			
+		
+			<input type="submit" value="新增" >
+	</form>
+	
+	
+	<form action="delete" method="post">
+		SNO:<input type="text" name="dsno"><br><br>
+			<input type="submit" value="刪除" >
+	</form>
+	
+	
+		<form action="update" method="post">
+		SNO:<input type="text" name="usno"><br><br>
+			<input type="submit" value="修改" >
+	</form>
+	
+	
+	
+	
+	<form action="hi" method="post">
+		<input type="text" >
+		<input type="submit" value="查詢" >
+	</form>
+	
+	
+	
+
+
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+Controller層
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Controller;
+
+
+import java.sql.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.tw.Service.StudentService;
+import com.tw.Bean.Student;
+
+@Controller
+public class WebController{
+	
+	@Autowired
+	private StudentService service;
+
+	public void setService(StudentService service) {
+		this.service = service;
+	}
+
+	public StudentService getService() {
+		return service;
+	}
+	
+	//查詢單一學生
+	@RequestMapping(value = "/hi" , method = RequestMethod.POST)
+	public String hiTest(@RequestParam(value = "sno")String sno,
+						@ModelAttribute(value = "student")Student student	) {
+		
+		student = service.getStudent(sno);
+		return "";
+	}
+	
+	//新增一個學生
+	@RequestMapping(value = "/insert" , method = RequestMethod.POST)
+	public String InserStudent(@RequestParam("sno")String sno,
+			@RequestParam("sname")String sname,
+			@RequestParam("sbday")String sbday,
+			@RequestParam("ssex")String ssex,
+			@RequestParam("smail")String smail,
+			@RequestParam("spwd")String spwd,
+			@ModelAttribute("student")Student student) {
+		Date sbdaySql = Date.valueOf(sbday);
+		int ssexSql = Integer.parseInt(ssex);
+		student = new Student(sno, sname, sbdaySql, ssexSql, smail, spwd);
+		service.InsertStudent(student);
+		
+		return "";
+	}
+	
+	//刪除一個學生按照SNO
+	@RequestMapping(value = "/delete" , method = RequestMethod.POST)
+	public String delete(@RequestParam("dsno")String sno) {
+		service.DeleteStudent(sno);
+		
+		return"";
+		
+	}
+	
+	//修改一個學生
+	@RequestMapping(value = "/update" , method = RequestMethod.POST)
+	public String update(@RequestParam("usno")String sno) {
+		service.UpdateStudent(sno);
+		return"";
+		
+	}
+	
+	
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+Service層
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Service;
+
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.tw.Dao.StudentDaoImpl;
+import com.tw.Bean.Student;
+
+@Service()
+public class StudentService{
+	
+	@Autowired
+	private StudentDaoImpl dao;
+	
+	public void setDao(StudentDaoImpl dao) {
+		this.dao = dao;
+	}
+	public StudentDaoImpl getDao() {
+		return dao;
+	}
+
+	@Transactional
+	public Student getStudent(String SNO) {
+			return dao.getStudent(SNO);
+		}
+	
+	@Transactional
+	public void InsertStudent(Student student) {
+		dao.InsertStudent(student); //新增
+		
+	}
+	
+	@Transactional
+	public void DeleteStudent(String sno) {
+		dao.DeleteStudent(sno); //刪除
+	}
+	
+	@Transactional
+	public void UpdateStudent(String sno) {
+		dao.UpdateStudent(sno);
+	}
+	
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+Dao層
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Dao;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.tw.Bean.Student;
+import com.tw.Dao.StudentDaoImpl;
+
+
+@Repository()
+public class StudentDaoImpl{
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	//查詢
+	public Student getStudent(String SNO) {
+		return	sessionFactory.getCurrentSession().get(Student.class, SNO);	
+	
+		
+	}
+	//新增
+	public void InsertStudent(Student student) {
+		sessionFactory.getCurrentSession().save(student);
+		//sessionFactory.openSession().save(student);
+	}
+	
+	public void DeleteStudent(String sno) {
+		Student student =sessionFactory.getCurrentSession().get(Student.class, sno);
+		sessionFactory.getCurrentSession().delete(student);
+		//sessionFactory.openSession().delete(student);
+		
+	}
+	
+	public void UpdateStudent(String sno) {
+		Student student =sessionFactory.getCurrentSession().get(Student.class, sno);
+		sessionFactory.getCurrentSession().update(student);
+		//sessionFactory.openSession().update(student);
+		
+	}
+	
+	
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+Bean層
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.Bean;
+
+import java.sql.Date
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+
+
+@Entity
+@Table(name="test.STUDENT",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"SNO"})})
+public class Student{
+	@Id
+	@Column(name = "SNO")
+	private String sno;
+		
+	
+	@Column(name = "SNAME")
+	private String sname;
+	
+	
+	@Column(name = "SBDAY")
+	private Date sbday;
+	
+	
+	@Column(name = "SSEX")
+	private int ssex;
+	
+	
+	@Column(name = "SMAIL")
+	private String smail;
+	
+	
+	@Column(name = "SPWD")
+	private String spwd;
+	
+	public Student() {
+		
+	}
+	
+	
+	public Student(String sno, String sname, Date sbday, int ssex, String smail, String spwd) {
+		super();
+		this.sno = sno;
+		this.sname = sname;
+		this.sbday = sbday;
+		this.ssex = ssex;
+		this.smail = smail;
+		this.spwd = spwd;
+	}
+
+	
+	public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public Date getSbday() {
+        return sbday;
+    }
+
+    public void setSbday(Date sbday) {
+        this.sbday = sbday;
+    }
+
+    public int getSsex() {
+        return ssex;
+    }
+
+    public void setSsex(int ssex) {
+        this.ssex = ssex;
+    }
+
+    public String getSmail() {
+        return smail;
+    }
+
+    public void setSmail(String smail) {
+        this.smail = smail;
+    }
+
+    public String getSpwd() {
+        return spwd;
+    }
+
+    public void setSpwd(String spwd) {
+        this.spwd = spwd;
+    }
+
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
