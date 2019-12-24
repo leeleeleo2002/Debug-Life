@@ -10,3 +10,9 @@ cvc-complex-type.2.4.d:發現了以元素'd:skin'開頭的無效內容。此處�
 方法2：進入sdk目錄下，把..\android-sdk\system-images\android-22\android-wear\armeabi-v7a\ devices.xml
 和..\android-sdk\system-images\android-22\android-wear\x86\devices.xml文件刪除，
 再把sdk 裡面 ..\android-sdk\tools\lib\下的devices. xml 拷貝到上述兩個文件夾裡，重啟eclipse 即可
+
+
+
+版本導致無法喧染的問題
+android:minSdkVersion="8"
+android:targetSdkVersion="18"
