@@ -1,0 +1,20 @@
+public static XMLGregorianCalendar dateTurn(String date) {
+		XMLGregorianCalendar xmlGregorianCalendar = null;
+		GregorianCalendar gcal =new GregorianCalendar();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date2 = null;
+		try {
+			date2=simpleDateFormat.parse(date);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		gcal.setTime(date2);
+		try {
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+			xmlGregorianCalendar.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return xmlGregorianCalendar;
+	}
