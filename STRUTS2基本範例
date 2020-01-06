@@ -28,6 +28,12 @@ Struts 2的約定插件將所有的注解操作文件名轉換為指定的格式
 因此，去除結束並轉換第一個字母為小寫後，LoginAction.action 將變為 login.action。
 Struts2約定插件的“掃描方法”和“命名轉換”特性真正帶來了很多的便利和好處
 ，隻有當你的Struts2項目正確下麵的命名約定才會帶來好處; 否則，這將是一場災難
+
+例如:com.tw.Action及com.tw.action
+只有後面那個會掃得到
+前面那個為大寫會掃不到
+
+
 ---------------------------------------------------------------------------------
 
 重新新建一個login.jsp並在web.xml中設定
@@ -96,7 +102,7 @@ web.xml
 透過struts2 的前端標籤 form action跳轉到方法內部
 loginAction.java
 ------------------------------------------------------------------------------------------------------------------
-package com.tw.action; //page不要使用大寫
+package com.tw.action; //page 
 
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -156,3 +162,26 @@ welcome.jsp
 
 </body>
 </html>
+---------------------------------------------------------------------------------------------------------------------------------------
+
+可在struts.xml中隱藏後方.action名稱
+
+struts.xml
+--------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.devMode" value="true" /> <!-- 啟用或關閉開發者模式 -->
+	
+
+					這邊設定後墜名詞
+  <constant name="struts.action.extension" value="jsp"/> <!-- 調用struts.action.exension將後方.action更改為jsp可以映射 -->
+														<!-- value的.已經算在裡面 -->
+ <package name="default" namespace="/User" extends="struts-default">
+	<action name="LoginAction">	<!-- 對應的action -->
+		<result>login.jsp</result>
+	</action>
+  </package>
+	
+
+</struts>  
