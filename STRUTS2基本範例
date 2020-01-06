@@ -1,0 +1,158 @@
+pom.xml
+--------------------------------------------------------------------------
+<dependency>
+		<groupId>org.apache.struts</groupId>
+		<artifactId>struts2-core</artifactId>
+		<version>2.3.1.2</version>
+</dependency>
+<dependency>
+		<groupId>org.apache.struts</groupId>
+		<artifactId>struts2-convention-plugin</artifactId>
+		<version>2.3.1.2</version>
+</dependency>
+		     <!-- servlet 3.1插件 -->
+<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <version>3.1.0</version>
+	    <scope>provided</scope>
+</dependency>
+----------------------------------------------------------------------------
+
+2. 命名轉換器(page不要使用大寫)
+Struts 2的約定插件將所有的注解操作文件名轉換為指定的格式。
+例如 : LoginAction.java
+
+首先，去掉“Action”字符在文件名的末尾，如果存在的話。
+其次，轉換文件名的第一個字母為小寫。
+因此，去除結束並轉換第一個字母為小寫後，LoginAction.action 將變為 login.action。
+Struts2約定插件的“掃描方法”和“命名轉換”特性真正帶來了很多的便利和好處
+，隻有當你的Struts2項目正確下麵的命名約定才會帶來好處; 否則，這將是一場災難
+---------------------------------------------------------------------------------
+
+重新新建一個login.jsp並在web.xml中設定
+不要用預設的index.jsp
+login.jsp
+-------------------------------------------------------------------------------------------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Struts2</title>
+
+
+
+</head>
+<body>
+	
+	<s:form action="go">
+		<s:textfield name="user"/>
+		<s:password name="password"/>
+		<s:submit value="提交"/>
+	</s:form>
+
+</body>
+</html>
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+web.xml
+-------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app>
+   
+  <display-name>Struts 2 Web Application</display-name>
+  
+   <welcome-file-list>
+       <welcome-file>login.jsp</welcome-file> 設定起始檔案:首頁
+   </welcome-file-list>
+   
+  <filter>
+	<filter-name>struts2</filter-name>
+	<filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>	struts2為filter
+  </filter>
+  
+  <filter-mapping>
+	<filter-name>struts2</filter-name>	掃描所有子資料夾
+	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+</web-app>
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+透過struts2 的前端標籤 form action跳轉到方法內部
+loginAction.java
+------------------------------------------------------------------------------------------------------------------
+package com.tw.action; //page不要使用大寫
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.ResultPath;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+@Namespace("/")
+@ResultPath("/")
+public class loginAction extends ActionSupport{
+
+	private String user;拿取前端name的參數
+	private String password;拿取前端name的參數
+	
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	             前端的action名稱映射                 返回字串               跳轉頁面
+	@Action(value = "go",results = {@Result(name = "success",location = "/welcome.jsp")})
+	public String execute() {複寫execute方法
+		return SUCCESS;
+	}
+
+}
+
+-------------------------------------------------------------------------------------------------------------
+
+welcome.jsp
+-------------------------------------------------------------------------------------------------------------
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Struts2</title>
+
+
+
+</head>
+<body>
+	
+	<s:property value="user"/>
+	<s:property value="password"/>
+
+</body>
+</html>
