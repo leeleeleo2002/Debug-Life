@@ -1,0 +1,565 @@
+首先要先確定POM檔的所有版本跟JAR檔都是正確的，沒有版本互相衝突的EXCEPTION
+
+pom.xml
+-------------------------------------------------------------------------------------------------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.tw</groupId>
+  <artifactId>MyWebLast</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>MyWebLast Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+  
+  
+  
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+    
+    
+    
+    
+    
+    
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+		
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+		
+		
+		
+		
+		
+		
+		
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.12.Final</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>5.2.12.Final</version>
+		</dependency>
+		
+		
+		
+		
+		
+		
+    
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.3.30</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-spring-plugin</artifactId>
+			<version>2.5.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-convention-plugin</artifactId>
+			<version>2.3.30</version>
+		</dependency>
+		
+		
+		
+		
+		
+		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.11</version>
+		</dependency>
+		
+		
+		
+		
+ 
+ 
+ 
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		
+		
+		
+		
+		
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+
+    
+    
+  </dependencies>
+  <build>
+    <finalName>MyWebLast</finalName>
+  </build>
+</project>
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+第二步設定web.xml檔，裡面要有struts2的filter，及監聽器監聽applicationContext.xml檔
+
+web.xml
+-----------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?> 
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns="http://java.sun.com/xml/ns/javaee" 
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+     id="WebApp_ID" version="3.0">
+ <display-name>Struts 2 Web Application</display-name>
+ <filter>
+  <filter-name>struts2</filter-name>
+  <filter-class>
+   org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
+  </filter-class>
+ </filter>
+   
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ 
+ <listener>
+  <listener-class>
+   org.springframework.web.context.ContextLoaderListener
+  </listener-class>
+ </listener>
+ <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        /WEB-INF/applicationContext.xml
+    </param-value>
+</context-param>
+ 
+ <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+ </welcome-file-list>
+ 
+</web-app>
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+再來設定applicationContext.xml 註冊所有Struts2 及 Hibernet
+<tx:annotation-driven/>這隻一定要開，因為要讓@Transactional可以映射
+
+applicationContext.xml
+-----------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd">
+		
+    
+    <mvc:annotation-driven />
+  	<context:annotation-config/>
+    <context:component-scan base-package="com.tw" />
+    
+     
+    
+    <mvc:default-servlet-handler />
+    
+   <!-- MySQL dataSource config -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+      <property name="url" value="jdbc:mysql://localhost:3306/myshema?useSSL=false&amp;serverTimezone=UTC&amp;characterEncoding=utf-8" />
+      <property name="username" value="root" />
+      <property name="password" value="a7228086123" />
+    </bean>
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+      <property name="dataSource" ref="dataSource"/>
+      <property name="packagesToScan" value="com.tw.bean"/>
+      <property name="hibernateProperties">
+        <props>
+          <prop key="hibernate.dialect">
+            org.hibernate.dialect.MySQLDialect
+          </prop>
+          <prop key="hibernate.show_sql">true</prop>
+        </props>
+      </property>
+    </bean>
+    
+	<tx:annotation-driven/>
+   <bean id="transactionManager"
+    class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+這樣設定檔都好了開始建構前端
+首先先建立index.jsp首頁
+
+
+index.jsp
+-----------------------------------------------------------------------------------------------------------------------------------------
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<html>
+<head></head>
+<body>
+	<h1>三大框架整合</h1>
+
+	<s:form action="test" method="post">
+		<s:textfield name="smail"/>
+		<s:submit/>
+	</s:form>
+	<s:property value="message"/>
+
+</body>
+</html>
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+透過action="test"開始建構後端
+建構action的package時要注意struts2命名轉換器的規範，所以盡量統一 com.tw.action
+
+
+MyAction.java
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.action;
+
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.ResultPath;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.tw.bean.Student;
+import com.tw.service.MyService;
+
+
+
+
+@Namespace("/")
+@ResultPath("/")
+@Controller
+public class MyAction extends ActionSupport{
+	@Autowired
+	private MyService myService;
+
+	public MyService getMyService() {
+		return myService;
+	}
+
+	public void setMyService(MyService myService) {
+		this.myService = myService;
+	}
+	
+	
+	public String smail;
+	public Student student;
+	public String message;
+	@Action(value = "test",results = {@Result(name = "success",location = "/WEB-INF/views/welcome.jsp"),
+									@Result(name="error",location = "/index.jsp")})
+	public String execute() {
+		student =myService.signIn(smail);
+		if(student != null) {
+			return SUCCESS;
+		}else {
+			message = "登入失敗";
+			return ERROR;
+		}
+		
+		
+	}
+	
+	
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+再來建後service層
+接觸dao的方法映射要宣告@Transactional不然Spring會報錯
+要注意到的是@Transactional import的類別
+
+import javax.transaction.Transactional;這隻是錯的
+import org.springframework.transaction.annotation.Transactional;這隻才是對的
+
+
+MyService.java
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.service;
+
+
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.tw.bean.Student;
+import com.tw.dao.MyDao;
+
+@Service
+public class MyService {
+	
+	@Autowired
+	private MyDao myDao;
+
+	public MyDao getMyDao() {
+		return myDao;
+	}
+
+	public void setMyDao(MyDao myDao) {
+		this.myDao = myDao;
+	}
+	
+	@Transactional
+	public Student signIn(String smail) {
+		 return myDao.signIn(smail);
+	}
+	
+	
+	
+
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+接著建構Dao層
+
+
+MyDao.java
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.dao;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.tw.bean.Student;
+
+@Repository
+public class MyDao {
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	
+	public Student signIn(String smail) {
+		
+		return sessionFactory.getCurrentSession().get(Student.class, smail);
+
+	}
+	
+	
+
+}
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+建構bean接觸資料庫
+
+Student.java
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.bean;
+
+import java.sql.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+@Entity
+@Table(name="myshema.STUDENT",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"SMAIL"})})
+public class Student{
+	
+	@Column(name = "SNO")
+	private String sno;
+		
+	
+	@Column(name = "SNAME")
+	private String sname;
+	
+	
+	@Column(name = "SBDAY")
+	private Date sbday;
+	
+	
+	@Column(name = "SSEX")
+	private int ssex;
+	
+	@Id
+	@Column(name = "SMAIL")
+	private String smail;
+	
+	
+	@Column(name = "SPWD")
+	private String spwd;
+	
+	public Student() {
+		
+	}
+	
+	
+	public Student(String sno, String sname, Date sbday, int ssex, String smail, String spwd) {
+		super();
+		this.sno = sno;
+		this.sname = sname;
+		this.sbday = sbday;
+		this.ssex = ssex;
+		this.smail = smail;
+		this.spwd = spwd;
+	}
+
+	
+	public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public Date getSbday() {
+        return sbday;
+    }
+
+    public void setSbday(Date sbday) {
+        this.sbday = sbday;
+    }
+
+    public int getSsex() {
+        return ssex;
+    }
+
+    public void setSsex(int ssex) {
+        this.ssex = ssex;
+    }
+
+    public String getSmail() {
+        return smail;
+    }
+
+    public void setSmail(String smail) {
+        this.smail = smail;
+    }
+
+    public String getSpwd() {
+        return spwd;
+    }
+
+    public void setSpwd(String spwd) {
+        this.spwd = spwd;
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+建構SUCCESS的跳轉業面
+在WEB-INF/views下
+
+welcome.jsp
+----------------------------------------------------------------------------------------------------------------------------------------
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<html>
+<head></head>
+<body>
+	<h1>整合成功</h1>
+	
+	<s:property value="student"/><br>
+	<s:property value="student.sno"/><br>
+	<s:property value="student.sname"/><br>
+	<s:property value="student.sbday"/><br>
+	<s:property value="student.ssex"/><br>
+	<s:property value="student.smail"/><br>
+	<s:property value="student.spwd"/><br>
+	
+
+
+
+</body>
+</html>
