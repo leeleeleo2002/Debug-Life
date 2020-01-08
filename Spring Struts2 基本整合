@@ -1,0 +1,282 @@
+此範例需要網路!此範例需要網路!此範例需要網路! 很重要所以說三次
+
+pom檔內的spring struts版本很重要! pom檔內的spring struts版本很重要! pom檔內的spring struts版本很重要!
+
+
+
+
+pom.xml
+-----------------------------------------------------------------------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.tw</groupId>
+  <artifactId>Fucking</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Fucking Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+    <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <spring.version>4.0.1.RELEASE</spring.version>
+    <log4j.version>2.5</log4j.version>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-core</artifactId>
+     <version>${spring.version}</version>
+ </dependency>
+ 
+ <dependency>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-web</artifactId>
+     <version>${spring.version}</version>
+ </dependency>
+ 
+ <dependency>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-webmvc</artifactId>
+     <version>${spring.version}</version>
+ </dependency>
+ 
+ 
+ <dependency>
+     <groupId>org.apache.struts</groupId>
+     <artifactId>struts2-core</artifactId>
+     <version>2.3.30</version>
+ </dependency>
+
+ <dependency>
+     <groupId>org.apache.struts</groupId>
+     <artifactId>struts2-spring-plugin</artifactId>
+     <version>2.5.8</version>
+ </dependency>
+
+ <dependency>
+     <groupId>org.apache.struts</groupId>
+     <artifactId>struts2-convention-plugin</artifactId>
+     <version>2.3.30</version>
+ </dependency>
+
+ <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        
+        
+        
+          <dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <version>3.1.0</version>
+	    <scope>provided</scope>
+	</dependency>
+
+ </dependencies>
+  <build>
+    <finalName>Fucking</finalName>
+  </build>
+</project>
+---------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+web.xml
+給定struts2的過濾器
+listener監聽Spring 的文件
+----------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC
+"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+"http://java.sun.com/dtd/web-app_2_3.dtd">
+   
+<web-app>
+ <display-name>Struts 2 Web Application</display-name>
+ <filter>
+  <filter-name>struts2</filter-name>
+  <filter-class>
+   org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
+  </filter-class>
+  <init-param>
+   <param-name>struts.action.extension</param-name>
+   <param-value>action</param-value>
+  </init-param>
+ </filter>
+   
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ 
+ <listener>
+  <listener-class>
+   org.springframework.web.context.ContextLoaderListener
+  </listener-class>
+ </listener>
+ 
+ 
+ <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+ </welcome-file-list>
+ 
+</web-app>
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+applicationContext.xml
+靠xml的listener監聽spring文件
+掃描器掃描com.tw
+---------------------------------------------------------------------------------------------------------------------------------------
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+     
+    <context:component-scan base-package="com.tw" />
+
+</beans>
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+前端
+index.jsp
+----------------------------------------------------------------------------------------------------------------------------------------
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<html>
+<head></head>
+<body>
+	<h1>Struts 2 注解示例</h1>
+
+	<s:form action="test">
+		<s:submit/>
+	</s:form>
+
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+套件com.tw.action
+MyAction.java
+---------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.action;
+
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.ResultPath;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import com.opensymphony.xwork2.ActionSupport;
+import com.tw.service.MyService;
+
+
+@Namespace("/")
+@ResultPath("/")
+@Controller
+public class MyAction extends ActionSupport {
+	
+	@Autowired
+	private MyService myService;
+
+	
+	public MyService getMyService() {
+		return myService;
+	}
+
+	public void setMyService(MyService myService) {
+		this.myService = myService;
+	}
+	
+	@Action(value = "test",results = {@Result(name = "success",location = "/index.jsp")})
+	public String execute() {
+		System.out.println("進入");
+		myService.getMyDao().print(); //測試是否成功調用Spring 的BEAN
+		return SUCCESS;
+	}
+	
+
+}
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+套件com.tw.service
+MyService.java
+----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.tw.dao.MyDao;
+
+@Service
+public class MyService {
+	
+	@Autowired
+	 private MyDao myDao;
+
+	public MyDao getMyDao() {
+		return myDao;
+	}
+
+	public void setMyDao(MyDao myDao) {
+		this.myDao = myDao;
+	}
+	 
+	 
+
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+套件com.tw.dao
+MyDao.java
+-----------------------------------------------------------------------------------------------------------------------------------------
+package com.tw.dao;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyDao {
+	public void print() {
+		System.out.println("Spring Struts2 整合成功");
+	}
+
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
